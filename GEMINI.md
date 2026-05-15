@@ -5,15 +5,13 @@
 
 ---
 
-## 🔐 Security & Credentials (ƯU TIÊN CAO NHẤT — ĐỌC TRƯỚC)
+## Git Pull Restriction Rule
 
-> ⚠️ **Quy tắc này có hiệu lực ngay khi bắt đầu task. AI PHẢI đọc và tuân thủ trước khi làm bất kỳ hành động nào liên quan đến xác thực.**
-
-### ❌ CẤM đọc file `.env` trực tiếp
-
-AI **KHÔNG ĐƯỢC** sử dụng bất kỳ công cụ nào (`view_file`, `read_url_content`, `run_command`, `grep`, v.v.) để đọc nội dung file `.env` nhằm mục đích lấy thông tin đăng nhập (username, password, token, API key...).
-
-> **Lý do:** File `.env` chứa credentials nhạy cảm. Việc đọc trực tiếp có nguy cơ lộ thông tin trong log, chat history hoặc artifact AI.
+* Tuyệt đối KHÔNG dùng lệnh GIT làm thay đổi trạng thái code (như `git pull`, `git checkout`, `git merge`, `git rebase`, `git reset`) để lấy code hoặc thay đổi nhánh.
+* Vì có nhiều trường hợp code trên server chưa được cập nhật, việc pull code về sẽ ghi đè và làm sai toàn bộ phần code đang chỉnh sửa ở máy local.
+* Luôn giữ nguyên trạng thái code local hiện tại để làm việc.
+* Nếu cần file hoặc nội dung mới, hãy yêu cầu người dùng cung cấp thay vì tự ý dùng git.
+* **Được phép** dùng lệnh read-only: `git status`, `git diff`, `git log` — để kiểm tra trạng thái mà không thay đổi code.
 
 ---
 
@@ -236,7 +234,7 @@ Agent sử dụng workflows trong `.agent/workflows/` qua slash commands:
 | `/generate_automation_framework`        | Thiết kế automation framework                             |
 | `/generate_locator`                     | Sinh locator ổn định cho UI element                      |
 | `/generate_test_data`                   | Sinh test data có cấu trúc                               |
-| `/generate_cross_module_test_plan`    | Phân tích cross-module, sinh Data Flow Map + ma trận kết hợp (Pairwise/Cartesian) |
+| `/generate_cross_module_test_plan`    | Phân tích cross-module (2 modes: DOCUMENT/BROWSER), sinh ma trận kết hợp bằng script pairwise |
 | `/generate_combinatorial_test_data`   | Sinh test data cho ma trận kết hợp — offline hoặc pipeline qua browser          |
 | `/generate_api_tests_from_swagger`      | Sinh API tests từ Swagger spec                             |
 | `/analyze_flaky_tests`                  | Phân tích và khắc phục flaky tests                     |

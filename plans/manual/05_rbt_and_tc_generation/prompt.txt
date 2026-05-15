@@ -70,7 +70,61 @@ Test Data **PHẢI CỤ THỂ**, không được dùng mô tả chung chung:
 - Performance: Xử lý danh sách lớn (1000+ records)
 - ...]
 
-### 5. Kỹ thuật thiết kế Test Case (Test Design Techniques)
+### 5. Validation chuyên biệt từng trường (Field-Level Validation)
+
+**BẮT BUỘC:** Khi form/UI có các input fields, phải:
+1. **Liệt kê tất cả input fields** trên form/UI đang test
+2. **Sinh validation TCs riêng cho TỪNG trường** theo đặc tính riêng của field đó
+3. **KHÔNG gộp** validation nhiều trường vào 1 test case
+
+Áp dụng checklist validation theo loại field:
+
+| Loại Field | Validation cần test |
+|---|---|
+| **Text (Name, Address...)** | Required/Optional · Min length · Max length · Whitespace-only · Ký tự đặc biệt (`<>&"'`) · XSS (`<script>alert(1)</script>`) · SQL injection (`' OR 1=1--`) · Unicode/Emoji · Leading/trailing spaces |
+| **Email** | Format hợp lệ · Thiếu `@` · Thiếu domain · Domain không hợp lệ · Nhiều `@` · Ký tự đặc biệt · Max length · Case sensitivity · Email trùng (nếu unique) |
+| **Phone** | Chỉ số · Prefix hợp lệ (`+84`, `0`) · Min/Max length · Chữ cái xen lẫn · Dấu `-`, `.`, khoảng trắng · Mã vùng không hợp lệ |
+| **Date / DateTime** | Format đúng · Ngày không tồn tại (`31/02`) · Năm nhuận (`29/02/2024`) · Quá khứ/tương lai · Min/Max date · Timezone |
+| **Number / Currency** | Min/Max value · Số âm · Số 0 · Thập phân · Ký tự không phải số · Overflow · Leading zeros · Định dạng currency |
+| **Dropdown / Select** | Giá trị mặc định · Tất cả options · Option disabled · Required (chưa chọn) |
+| **Checkbox / Radio** | Trạng thái mặc định · Check/Uncheck · Required · Nhóm radio (chỉ 1) |
+| **File Upload** | File type hợp lệ/không hợp lệ · Max size · File rỗng (0 KB) · Tên file ký tự đặc biệt · Multiple files |
+| **Password** | Min/Max length · Ký tự đặc biệt · Chữ hoa/thường · Số · Copy-paste · Hiện/ẩn · Confirm password |
+| **Textarea** | Max length · Line breaks · HTML tags · Character counter |
+
+**Ví dụ Field-Level Validation cho form "Đăng ký":**
+```
+Form có 4 trường: Họ tên, Email, SĐT, Mật khẩu
+
+→ Trường "Họ tên" (Text, max 100 ký tự, required):
+  - TC: Để trống → Báo lỗi required
+  - TC: Nhập 1 ký tự → Hợp lệ (hoặc báo lỗi min length)
+  - TC: Nhập 100 ký tự → Hợp lệ (max)
+  - TC: Nhập 101 ký tự → Báo lỗi vượt max
+  - TC: Nhập chỉ khoảng trắng → Báo lỗi
+  - TC: Nhập <script>alert(1)</script> → Không thực thi script
+
+→ Trường "Email" (Email, required, unique):
+  - TC: Nhập test@domain.com → Hợp lệ
+  - TC: Nhập testdomain.com (thiếu @) → Báo lỗi format
+  - TC: Nhập test@.com (thiếu domain) → Báo lỗi
+  - TC: Nhập email đã tồn tại → Báo lỗi trùng
+
+→ Trường "SĐT" (Phone, 10 số, bắt đầu bằng 0):
+  - TC: Nhập 0912345678 → Hợp lệ
+  - TC: Nhập 912345678 (thiếu prefix 0) → Báo lỗi
+  - TC: Nhập 091234567 (9 số) → Báo lỗi min length
+  - TC: Nhập abc1234567 → Báo lỗi chỉ chấp nhận số
+
+→ Trường "Mật khẩu" (Password, 8-20, cần chữ hoa + số):
+  - TC: Nhập Abcdef12 (8 ký tự, có chữ hoa + số) → Hợp lệ
+  - TC: Nhập abcdefgh (chỉ chữ thường) → Báo lỗi
+  - TC: Nhập 1234567 (7 ký tự) → Báo lỗi min length
+```
+
+> Hãy xác định đặc tính từng field (type, required, min/max, format, unique...) từ requirements trước khi sinh TCs.
+
+### 6. Kỹ thuật thiết kế Test Case (Test Design Techniques)
 
 Áp dụng các kỹ thuật kinh điển sau để sinh test case có hệ thống:
 

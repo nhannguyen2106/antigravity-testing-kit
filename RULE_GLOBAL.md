@@ -1,15 +1,5 @@
 # 🧹 Global Rule
 
-## 🔐 Security & Credentials (ƯU TIÊN CAO NHẤT — ĐỌC TRƯỚC)
-
-> ⚠️ **Quy tắc này có hiệu lực ngay khi bắt đầu task. AI PHẢI đọc và tuân thủ trước khi làm bất kỳ hành động nào liên quan đến xác thực.**
-
-### ❌ CẤM đọc file `.env` trực tiếp
-
-AI **KHÔNG ĐƯỢC** sử dụng bất kỳ công cụ nào (`view_file`, `read_url_content`, `run_command`, `grep`, v.v.) để đọc nội dung file `.env` nhằm mục đích lấy thông tin đăng nhập (username, password, token, API key...).
-
-> **Lý do:** File `.env` chứa credentials nhạy cảm. Việc đọc trực tiếp có nguy cơ lộ thông tin trong log, chat history hoặc artifact AI.
-
 ## Ngôn ngữ
 
 - Mặc định giao tiếp, phân tích và giải thích mã nguồn bằng Tiếng Việt.
